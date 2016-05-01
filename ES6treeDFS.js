@@ -9,9 +9,8 @@ class Node {
 
 }
 
-//depthFirst traversal goes to each node and invokes the callback on it 
-//it depends on a recurse method, which is a method that conditionally calls itself
-//based on some conditional logic
+//depthFirst traversal goes to each node, starting with deepest nodes, and invokes callback on it 
+
 class Tree {
 
   constructor(data){
@@ -28,7 +27,7 @@ class Tree {
       
       }
 
-      callback(currentNode)
+      callback(currentNode);
     
     }
 
@@ -36,29 +35,59 @@ class Tree {
   
   }
 
-  addNode(data){
 
-    let newNode = new Node(data);
+  /*
+   * Uses depth first traversal to invoke a callback that returns true or false
+   *
+   */
+  contains(data){
+    let result = null;
 
-    function checkAndAdd(currentNode){
-      
-      if (currentNode.children && currentNode.children.length < 2){
-        currentNode.children.push(newNode);
+    function findNode(currentNode){
+
+      if(!result && currentNode.data.val === data){
+        result = true;
       }
-    
+
     }
 
-    this.traverseDF(checkAndAdd);
+    this.traverseDF(findNode);
+
+    return result;
+  }
+
+  addNode(data, target){
+
+    let newNode = new Node(data);
+    let parentNode = null;
+
+    function findParent(currentNode){
+
+      let openParent = currentNode.children.length < 2;
+      
+        if(!parentNode && openParent){
+	  parentNode = currentNode;
+	  return;
+
+	}
+	  
+      }
+
+    this.traverseDF(findParent);
+
+    parentNode.children.push(newNode);
   
   }
 
 }
 
-const testNode = new Node({val:1});
 const tree = new Tree({val:1});
 
 tree._root.children.push(new Node({val:2}));
 tree._root.children.push(new Node({val:3}));
 
+console.log(tree.contains(2));
+
 tree.addNode({val:4});
-tree.traverseDF(x => console.log(x));
+console.log(tree.contains(4));
+tree.traverseDF(x => console.log(x.data.val));
